@@ -55,6 +55,36 @@ app.delete("/Pessoas:id", async (req, res) => {
   res.status(200).json({ message: "ID Deletada" });
 });
 
+app.put("/Pessoas:id", async (req, res) => {
+  const { id } = req.params;
+  const { nome, idade, curso } = req.body;
+  const { data, error } = await supabase
+    .from("Pessoas")
+    .update({ nome, idade, curso })
+    .eq("id", id)
+    .select();
+
+  if (error) {
+    return res.status(400).json({ error: error.message });
+  }
+
+  res.status(200).json({ message: "Tabela Atualizada" });
+});
+
+app.get("/Pessoas:id", async (req, res) => {
+  const { id } = req.params;
+  const { data, error } = await supabase
+    .from("Pessoas")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    return res.status(400).json({ error: error.message });
+  }
+  res.json(data);
+});
+
 app.listen(3000, () => {
   console.log("O servidor subiu na porta 3000");
 });
